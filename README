@@ -1,0 +1,140 @@
+
+//不同方式参数获取
+router.get('/',async (ctx) => {
+    await ctx.render('index', { title:JSON.stringify(ctx.query)});
+})
+
+router.get('/hello/:name', async (ctx) => {
+    var name = ctx.params.name; // 获取请求参数
+    ctx.response.body = `<h5>Hello, ${name}!</h5>`;
+});
+
+router.post('/ff',(ctx) => {
+    ctx.response.body = JSON.stringify(ctx.request.body)
+})
+
+//多级路由案例
+https://www.jianshu.com/p/9f8d4ef555b8
+router.get('/',async (ctx) => {
+    // ctx.body = ctx.request.body;
+    console.log(ctx.request.body)
+    console.log(ctx.query);  //{ aid: '123' }       获取的是对象   用的最多的方式  **推荐
+    console.log(ctx.querystring);  //aid=123&name=zhangsan      获取的是一个字符串
+    console.log(ctx.url);   //获取url地址
+   await ctx.render('index', { title:'lqs' })
+})
+
+
+//async 串行请求
+let https = require('../http/http.js')
+https.$series([
+            https.$http('192.168.4.17',4000,'GET','/ss',{dd:'get'},{token:'get'}),
+            https.$http('192.168.4.17',4000,'POST','/ff',{dd:'post'},{token:'post'})
+       ],
+       function (data) {
+           res.render('index',{
+               title:'fsdaf',
+               hasFooter:true,
+               data:data
+           })
+       })
+
+       //res 用于重定向
+        https.$series([
+                   https.$http('192.168.4.17',4000,'GET','/ss',{dd:'get'},{token:token},res),
+                   https.$http('192.168.4.17',4000,'POST','/ff',{dd:'post'},{token:token},res)
+               ],
+               function (data) {
+                   console.log(data)
+                   // res.render('index',{
+                   //     title:'fsdaf',
+                   //     hasFooter:true,
+                   //     data:data
+                   // })
+               },
+               res)
+
+
+//目录作用
+
+bin 启动目录
+logs 服务器上日志
+public 服务器静态资源
+routers 前端页面的路由配置
+sr-js-css gulp 前期未压缩的文件
+views ejs 模板页面
+app.js 服务文件
+app.json pm2 配置文件
+gulpfile.js gulp 配置文件
+
+//node 服务器并行请求数据
+https://blog.csdn.net/sxyizhiren/article/details/18240435
+https://wenku.baidu.com/view/c98b4e25ba1aa8114431d98d
+//服务端请求
+https://blog.csdn.net/u014345860/article/details/80738341
+//rem兼容模式
+  (function (win ,des , sw) {
+        var doc = win.document;
+        var docEl = doc.documentElement;
+        // 获取样式值
+        function getStyle(dom, attr) {
+            if (window.getComputedStyle) {
+                return window.getComputedStyle(dom, null)[attr];
+            } else {
+                return dom.currentStyle[attr];
+            }
+        }
+        //原生js添加事件 移除事件
+        function addEvent(obj, type, fn) {
+            obj.addEventListener ? obj.addEventListener(type, fn, false) : obj.attachEvent("on" + type, fn);
+        }
+        // 处理不规则的rem计算
+        function fixFontSize(width, rem, html, screenWidth) {
+            var body = doc.getElementsByTagName('body')[0];
+            body.style.width = screenWidth;
+            var scale = 1;
+            var bodyWidth = parseInt(getStyle(body, 'width'));
+            if (bodyWidth != width) {
+                scale = parseInt(width*100 / bodyWidth)/100;
+                rem = rem * scale;
+                alert(scale)
+                docEl.style.fontSize = rem + 'px';
+                // html.style.fontSize = rem + 'px';
+            }
+            body.style.width = '100%';
+        }
+        //计算root元素的字体大小
+        function refreshRem(design,screenWidth) {
+            var html = document.getElementsByTagName('html')[0];
+            var width = parseInt(getStyle(html, 'width'));
+            if (width > 768) { // 最大宽度
+                width = 768;
+            }
+            var rem = width*100 / design; // 将屏幕宽度分成10份， 1份为1rem
+            docEl.style.fontSize = rem + 'px';
+            // html.style.fontSize = rem + 'px';
+            fixFontSize(width, rem , html ,screenWidth);
+        }
+            refreshRem(des , sw);
+
+            addEvent(win,'resize',function () {
+                refreshRem(des , sw);
+            })
+    })(window,750,'7.5rem');
+
+
+  //post参数请求解析
+    const bodyParser = require('koa-bodyparser')
+
+    const app = new Koa()
+
+    app.use(bodyParser())
+
+    app.use( async (ctx) => {
+        ctx.body =  ctx.request.body
+    })
+
+
+    //koa2操作cookie
+    ctx.cookies.get(name,[optins]):读取上下文请求中的cookie。
+    ctx.cookies.set(name,value,[options])：在上下文中写入cookie。

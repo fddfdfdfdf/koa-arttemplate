@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h2 class="title">这是一个koa-art-template</h2>
+<h2>绑定数据</h2>
+<div>
+    {{list.name}}
+</div>
+<h2>绑定html数据</h2>
+    {{ list.h }}
+    {{@ list.h }}
+<div>
+    <h2>条件</h2>
+    {{if list.num > 10}}
+       大于10
+    {{else}}
+       小于10
+    {{/if}}
+</div>
+<h2>循环数据</h2>
+<ul>
+    {{each list.data  value index}}
+    <li>索引 {{index + 1}} ：{{value}}</li>
+    {{/each}}
+</ul>
+<input id="dd" type="hidden" value='{{list}}'>
+<script type="text/javascript">
+   var dd = '{{list}}'
+
+</script>
+</body>
+</html>
